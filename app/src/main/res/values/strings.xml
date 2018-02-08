@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SpaceX</string>
+    <string name="refresh_message_launches">Successfully refreshed.</string>
+</resources>
