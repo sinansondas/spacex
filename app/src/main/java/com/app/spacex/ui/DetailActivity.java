@@ -1,13 +1,16 @@
 package com.app.spacex.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.spacex.R;
 import com.app.spacex.model.Launch;
+import com.app.spacex.model.Links;
+import com.app.spacex.util.DateUtil;
 import com.app.spacex.util.ToastUtil;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 
@@ -57,5 +60,23 @@ public class DetailActivity extends BaseActivity {
     private void initializeViews() {
         TextView textViewDetail = findViewById(R.id.tv_launch_details);
         textViewDetail.setText(launch.getDetails());
+        TextView textViewLaunchDate = findViewById(R.id.tv_launch_date);
+        String date = DateUtil.getFormattedDayMonthYear(launch.getLaunchDateUnix().longValue()).toString();
+        textViewLaunchDate.setText("Date: "+date);
+        TextView textViewFlightNumber = findViewById(R.id.tv_fligght_number);
+        Double flightNumber = launch.getFlightNumber();
+        textViewFlightNumber.setText("Flight Number : "+Integer.toString(flightNumber.intValue()));
+        TextView textViewLaunchArticleLink = findViewById(R.id.tv_launch_article_link);
+
+        ImageView imageViewLaunchBanner = findViewById(R.id.iv_launch_banner);
+        if (launch.getLinks() != null) {
+            Links links = launch.getLinks();
+            if (links.getMissionPatch() != null) {
+                String imageBannerPath = launch.getLinks().getMissionPatch();
+                Picasso.with(this).load(imageBannerPath).placeholder(R.drawable.ic_launcher_background).into(imageViewLaunchBanner);
+            }
+            if (links.getArticleLink() != null)
+                textViewLaunchArticleLink.setText("Article Link: "+launch.getLinks().getArticleLink());
+        }
     }
 }

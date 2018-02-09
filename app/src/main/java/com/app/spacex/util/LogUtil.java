@@ -10,8 +10,4 @@ public class LogUtil {
     public static void log(String message) {
         Log.i(LogUtil.class.getSimpleName(), message);
     }
-
-    public static void log(Exception ex) {
-        log(ex.getMessage());
-    }
 }

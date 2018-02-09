@@ -17,9 +17,18 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:orientation="vertical">
-
             <TextView
-                android:id="@+id/tv_launch_details"
+                android:id="@+id/tv_fligght_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="all" />
+            <TextView
+                android:id="@+id/tv_rocket_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="all" />
+            <TextView
+                android:id="@+id/tv_launch_year"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autoLink="all" />
@@ -28,7 +37,9 @@
                 android:id="@+id/iv_launch_banner"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                android:visibility="gone"
+                />
 
             <TextView
                 android:id="@+id/tv_launch_article_link"

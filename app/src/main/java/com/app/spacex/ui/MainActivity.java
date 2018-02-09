@@ -6,6 +6,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.app.spacex.R;
 import com.app.spacex.model.Launch;
@@ -14,6 +18,7 @@ import com.app.spacex.ui.adapter.LaunchListAdapter;
 import com.app.spacex.ui.adapter.LaunchListListener;
 import com.app.spacex.util.ToastUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements LaunchListListener {
@@ -23,11 +28,14 @@ public class MainActivity extends BaseActivity implements LaunchListListener {
 
     private LaunchListAdapter launchListAdapter;
 
+    private Spinner spinner;
+    List<Launch> list;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initializeActivity();
     }
 
@@ -57,6 +65,39 @@ public class MainActivity extends BaseActivity implements LaunchListListener {
     }
 
     private void initializeViews() {
+
+        spinner = findViewById(R.id.spacex_spinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spacex_array, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (list != null) {
+                    if (spinner.getSelectedItem().equals("ALL")) {
+                        processLoadLaunchesResponse(list);
+                    } else {
+                        filterByYear(list, spinner.getSelectedItem().toString());
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         swipeRefreshLayoutLaunches = findViewById(R.id.srl_launches);
         swipeRefreshLayoutLaunches.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -80,6 +121,7 @@ public class MainActivity extends BaseActivity implements LaunchListListener {
             @Override
             public void onSucceed(List<Launch> response) {
                 processLoadLaunchesResponse(response);
+                list = response;
                 swipeRefreshLayoutLaunches.setRefreshing(false);
             }
 
@@ -91,8 +133,34 @@ public class MainActivity extends BaseActivity implements LaunchListListener {
     }
 
     private void processLoadLaunchesResponse(List<Launch> launches) {
-        launchListAdapter.updateItems(launches);
-        ToastUtil.showMessage(this, refreshMessageLaunches);
+
+        if(spinner.getSelectedItem().equals("ALL")){
+            launchListAdapter.updateItems(launches);
+            ToastUtil.showMessage(this, refreshMessageLaunches);
+        }
+        else {
+            filterByYear(launches,spinner.getSelectedItem().toString());
+        }
+
+
     }
+
+    private void filterByYear(List<Launch> launches, String Year) {
+
+        if (launches != null) {
+            List<Launch> launchesByYear = new ArrayList<>();
+            for (Launch launch : launches) {
+                if (launch.getLaunchYear().equals(Year)) {
+
+                    launchesByYear.add(launch);
+                }
+            }
+            launchListAdapter.updateItems(launchesByYear);
+            swipeRefreshLayoutLaunches.setRefreshing(false);
+        }
+
+    }
+
+
     //endregion
 }

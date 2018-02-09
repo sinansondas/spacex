@@ -28,15 +28,19 @@ public class LaunchListAdapter extends RecyclerView.Adapter<LaunchListAdapter.Vi
     private Context context;
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewLaunchDetails;
+        private TextView textViewFlightNumber;
+        private TextView textViewLaunchYear;
         private TextView textViewLaunchArticleLink;
-        private ImageView imageVieLaunchBanner;
+        private ImageView imageViewLaunchBanner;
+        private TextView textViewRocketName;
 
         private ViewHolder(View itemView) {
             super(itemView);
-            textViewLaunchDetails = itemView.findViewById(R.id.tv_launch_details);
+            textViewFlightNumber = itemView.findViewById(R.id.tv_fligght_number);
+            textViewLaunchYear = itemView.findViewById(R.id.tv_launch_year);
             textViewLaunchArticleLink = itemView.findViewById(R.id.tv_launch_article_link);
-            imageVieLaunchBanner = itemView.findViewById(R.id.iv_launch_banner);
+            imageViewLaunchBanner = itemView.findViewById(R.id.iv_launch_banner);
+            textViewRocketName = itemView.findViewById(R.id.tv_rocket_name);
         }
     }
 
@@ -68,15 +72,21 @@ public class LaunchListAdapter extends RecyclerView.Adapter<LaunchListAdapter.Vi
             }
         });
 
-        String launchDetails = launch.getDetails();
-        holder.textViewLaunchDetails.setText(launchDetails);
+        Double flightNumber = launch.getFlightNumber();
+        holder.textViewFlightNumber.setText("Flight Number : "+Integer.toString(flightNumber.intValue()));
+
+        String launchYear = launch.getLaunchYear();
+        holder.textViewLaunchYear.setText("Year: " +launchYear);
+
+        String rocketName = launch.getRocket().getRocketName();
+        holder.textViewRocketName.setText("Rocket Name: "+rocketName);
 
         if (launch.getLinks() != null) {
             Links links = launch.getLinks();
 
             if (links.getMissionPatch() != null) {
                 String imageBannerPath = launch.getLinks().getMissionPatch();
-                Picasso.with(context).load(imageBannerPath).into(holder.imageVieLaunchBanner);
+                Picasso.with(context).load(imageBannerPath).into(holder.imageViewLaunchBanner);
             }
 
             if (links.getArticleLink() != null) {
@@ -96,4 +106,5 @@ public class LaunchListAdapter extends RecyclerView.Adapter<LaunchListAdapter.Vi
         this.launches = launches;
         notifyDataSetChanged();
     }
+
 }
